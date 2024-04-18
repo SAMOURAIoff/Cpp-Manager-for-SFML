@@ -1,7 +1,6 @@
 
 #pragma once
 #include "State.h"
-#include "SFML_ENGINE/SteamManager.h"
 
 
 class Game

@@ -57,9 +57,6 @@
     <ClCompile Include="MovieManager.cpp">
       <Filter>Fichiers sources\ENGINE\MANAGER</Filter>
     </ClCompile>
-    <ClCompile Include="SteamManager.cpp">
-      <Filter>Fichiers sources\ENGINE\TOOLS</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioManager.h">
@@ -85,9 +82,6 @@
     </ClInclude>
     <ClInclude Include="MovieManager.h">
       <Filter>Fichiers d%27en-tête\ENGINE\MANAGER</Filter>
-    </ClInclude>
-    <ClInclude Include="SteamManager.h">
-      <Filter>Fichiers d%27en-tête\ENGINE\TOOLS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -27,13 +27,16 @@ Test::Test(WindowManager& _window, StateStack* stackState) : State(_window, stac
 
 void Test::update()
 {
+
+	m_steam.update();
+
 	time = timerr.getElapsedTime();
 
 	if(time.asSeconds() >= 5)
 	{
-		GET_MANAGER->getSteam().getServeur().searchLobby();
-		GET_MANAGER->getSteam().getServeur().getNumLobbies();
-		GET_MANAGER->getSteam().getServeur().connectRandomLobby();
+		m_steam.getServeur().searchLobby();
+		m_steam.getServeur().getNumLobbies();
+		m_steam.getServeur().connectRandomLobby();
 		timerr.restart();
 	}
 
@@ -45,60 +48,6 @@ void Test::update()
         pushState(1);
     }
 
-	
-
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Move").y > 0.3f)
-	{
-		posPlayer.y -= 0.1;
-	}
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Move").y < -0.3f)
-	{
-		posPlayer.y += 0.1;
-	}
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Move").x < -0.3f)
-	{
-		posPlayer.x -= 0.1;
-	}
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Move").x > 0.3f)
-	{
-		posPlayer.x += 0.1;
-	}
-
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Camera").y > 0.3f)
-	{
-		posPlayer2.y -= 0.1;
-	}
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Camera").y < -0.3f)
-	{
-		posPlayer2.y += 0.1;
-	}
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Camera").x < -0.3f)
-	{
-		posPlayer2.x -= 0.1;
-	}
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Camera").x > 0.3f)
-	{
-		posPlayer2.x += 0.1;
-	}
-
-	player.setPosition(posPlayer);
-	player2.setPosition(posPlayer2);
-
-	static bool test = false;
-
-	if (GET_MANAGER->getSteam().getManette().get_button_action("A").bState == true)
-	{
-		GET_MANAGER->getSteam().getManette().setVibration(1000, 1000);
-		test = true;
-	}
-	else
-	{
-		if (test)
-		{
-			GET_MANAGER->getSteam().getManette().setVibration(0, 0);
-		}
-		
-	}
 		
 }
 

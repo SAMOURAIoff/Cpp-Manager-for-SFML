@@ -159,7 +159,6 @@
     <ClCompile Include="MovieManager.cpp" />
     <ClCompile Include="RessourcesManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="SteamManager.cpp" />
     <ClCompile Include="TexturesManager.cpp" />
     <ClCompile Include="Tools.cpp" />
     <ClCompile Include="WindowManager.cpp" />
@@ -170,7 +169,6 @@
     <ClInclude Include="MovieManager.h" />
     <ClInclude Include="RessourcesManager.h" />
     <ClInclude Include="Sprite.h" />
-    <ClInclude Include="SteamManager.h" />
     <ClInclude Include="TexturesManager.h" />
     <ClInclude Include="Tools.h" />
     <ClInclude Include="WindowManager.h" />

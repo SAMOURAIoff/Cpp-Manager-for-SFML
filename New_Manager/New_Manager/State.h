@@ -25,6 +25,7 @@
 #pragma once
 #include "SFML_ENGINE/WindowManager.h"
 #include "SFML_ENGINE/Sprite.h"
+#include "steam.h"
 
 
 class State
@@ -32,6 +33,9 @@ class State
 protected:
 	std::stack<std::unique_ptr<State>>* m_stackState;
 	WindowManager& m_windowManager;
+
+    SteamManager m_steam;
+
 public:
 	State(WindowManager& _window, std::stack<std::unique_ptr<State>>* stackState);
 	void virtual update() = 0;
