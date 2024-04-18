@@ -23,23 +23,25 @@ Test::Test(WindowManager& _window, StateStack* stackState) : State(_window, stac
 	player2.setPosition(sf::Vector2f(500, 500));
 	player2.setFillColor(sf::Color(0, 255, 0, 255));
 	posPlayer2 = player2.getPosition();
+
+	
 }
 
 void Test::update()
 {
-
-	m_steam.update();
-
-	time = timerr.getElapsedTime();
-
-	if(time.asSeconds() >= 5)
+	if(KEY(S) and m_windowManager.timer() > 0.2f)
 	{
 		m_steam.getServeur().searchLobby();
-		m_steam.getServeur().getNumLobbies();
+		//m_steam.getServeur().getNumLobbies();
 		m_steam.getServeur().connectRandomLobby();
-		timerr.restart();
+		m_windowManager.resetTimer();
 	}
 
+	if (KEY(C) and m_windowManager.timer() > 0.2f)
+	{
+		m_steam.getServeur().createLobby();
+		m_windowManager.resetTimer();
+	}
 
     if (KEY(R) and m_windowManager.timer() > 0.2f)
     {
@@ -48,7 +50,7 @@ void Test::update()
         pushState(1);
     }
 
-		
+	m_steam.update();
 }
 
 void Test::render()

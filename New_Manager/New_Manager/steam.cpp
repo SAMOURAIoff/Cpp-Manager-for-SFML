@@ -1,11 +1,6 @@
 #include "steam.h"
 
 
-void OnLobbyListUpdated(const LobbyMatchList_t* pCallback, bool bIOFailure)
-{
-	ServeurHandle().OnLobbyDataUpdated(pCallback, bIOFailure);
-}
-
 #pragma region API
 
 SteamManager::SteamManager()
@@ -34,10 +29,6 @@ ServeurHandle& SteamManager::getServeur()
 	return m_serveurH;
 }
 
-void SteamManager::LobbyListUpdatedCallback(const LobbyMatchList_t* pCallback, bool bIOFailure)
-{
-	OnLobbyListUpdated(pCallback, bIOFailure);
-}
 
 #pragma endregion
 
@@ -54,8 +45,21 @@ ServeurHandle::~ServeurHandle()
 
 void ServeurHandle::createLobby()
 {
-	if (SteamMatchmaking()->CreateLobby(k_ELobbyTypePublic, 2))
-		std::cout << "------- create lobby ------- \n";
+	SteamAPICall_t hAPICall = SteamMatchmaking()->CreateLobby(k_ELobbyTypePublic, 2);
+
+	m_CallbackCreateLobby.Register(this, &ServeurHandle::OnLobbyCreated);
+}
+
+void ServeurHandle::OnLobbyCreated( CallbackData_CreateLobby* pData)
+{
+	if (!pData->bIOFailure) {
+		// Utilisez pData->CallbackResult pour accéder aux données de retour
+		LobbyCreated_t lobbyData = pData->CallbackResult;
+		// Faites quelque chose avec les données du lobby créé...
+	}
+	else {
+		// Gérer les erreurs de création de lobby
+	}
 }
 
 void ServeurHandle::searchLobby()
@@ -82,10 +86,10 @@ void ServeurHandle::connectRandomLobby()
 		CSteamID lobbyID = SteamMatchmaking()->GetLobbyByIndex(i);
 		if (SteamMatchmaking()->GetNumLobbyMembers(lobbyID) < 2)
 		{
-			connectToLobby(lobbyID);
 			m_currentLobby = lobbyID;
 			m_connectedToLobby = true;
 			std::cout << "------- connect to lobby ------- \n";
+			connectToLobby(lobbyID);
 			return;
 		}
 		else

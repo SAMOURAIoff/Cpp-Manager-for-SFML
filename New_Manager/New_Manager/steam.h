@@ -1,8 +1,16 @@
 #pragma once
 #include "SFML_ENGINE/Tools.h"
+#include <functional>
 
-void OnLobbyListUpdated(const LobbyMatchList_t* pCallback, bool bIOFailure);
+struct LobbyCreated_t;
+struct LobbyMatchList_t;
 
+enum class ECallbackType
+{
+	LobbyCreated,
+	LobbyJoined,
+	// Autres types de callback nécessaires
+};
 
 class ServeurHandle
 {
@@ -12,11 +20,22 @@ private:
 	CSteamID m_currentLobby;
 	int m_numLobbies;
 
-public:
+	struct CallbackData_CreateLobby
+	{
+		bool bIOFailure;
+		LobbyCreated_t CallbackResult;
+
+		CallbackData_CreateLobby() : bIOFailure(false) {}
+	};
+
+	CCallback<CallbackData_CreateLobby,ECallbackType> m_CallbackCreateLobby;
+
+public: 
 	ServeurHandle();
 	~ServeurHandle();
 
 	void createLobby();
+	
 	void searchLobby();
 	void inviteFriendtoLobby(CSteamID playerSteamID);
 	void connectToLobby(CSteamID remoteSteamID);
@@ -26,6 +45,7 @@ public:
 	int getNumLobbies();
 
 	void OnLobbyDataUpdated(const LobbyMatchList_t* pCallback, bool bIOFailure);
+	void OnLobbyCreated( CallbackData_CreateLobby* data);
 };
 
 
@@ -41,7 +61,5 @@ public:
 	~SteamManager();
 
 	ServeurHandle& getServeur();
-
-	static void LobbyListUpdatedCallback(const LobbyMatchList_t* pCallback, bool bIOFailure);
 
 };
