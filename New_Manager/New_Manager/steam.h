@@ -28,7 +28,7 @@ private:
 		CallbackData_CreateLobby() : bIOFailure(false) {}
 	};
 
-	CCallback<CallbackData_CreateLobby,ECallbackType> m_CallbackCreateLobby;
+	CCallback<ServeurHandle, ServeurHandle::CallbackData_CreateLobby> m_CallbackCreateLobby;
 
 public: 
 	ServeurHandle();
@@ -45,7 +45,7 @@ public:
 	int getNumLobbies();
 
 	void OnLobbyDataUpdated(const LobbyMatchList_t* pCallback, bool bIOFailure);
-	void OnLobbyCreated( CallbackData_CreateLobby* data);
+	void OnLobbyCreated( CallbackData_CreateLobby& data);
 };
 
 

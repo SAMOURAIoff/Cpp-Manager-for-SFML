@@ -50,15 +50,18 @@ void ServeurHandle::createLobby()
 	m_CallbackCreateLobby.Register(this, &ServeurHandle::OnLobbyCreated);
 }
 
-void ServeurHandle::OnLobbyCreated( CallbackData_CreateLobby* pData)
+void ServeurHandle::OnLobbyCreated( CallbackData_CreateLobby& data)
 {
-	if (!pData->bIOFailure) {
-		// Utilisez pData->CallbackResult pour accéder aux données de retour
-		LobbyCreated_t lobbyData = pData->CallbackResult;
-		// Faites quelque chose avec les données du lobby créé...
+	if (data.bIOFailure || data.CallbackResult.m_eResult != k_EResultOK)
+	{
+		std::cout << "Erreur lors de la création de la salle d'attente : " << data.CallbackResult.m_eResult << std::endl;
 	}
-	else {
-		// Gérer les erreurs de création de lobby
+	else
+	{
+		std::cout << "Salle d'attente créée avec succès !" << std::endl;
+		m_currentLobby = data.CallbackResult.m_ulSteamIDLobby;
+		// Appeler la fonction pour mettre à jour les données du lobby
+		OnLobbyDataUpdated(nullptr, false);
 	}
 }
 
