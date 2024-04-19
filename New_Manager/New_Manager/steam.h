@@ -22,17 +22,12 @@ private:
 	CSteamID m_currentLobby;
 	int m_numLobbies;
 
-	struct CallbackData_CreateLobby
-	{
-		bool bIOFailure;
-		LobbyCreated_t CallbackResult;
+	CCallResult< ServeurHandle, LobbyMatchList_t> m_CallbackLobbyDataUpdated;
+	typedef void (ServeurHandle::* LobbyDataCallback_t)(LobbyMatchList_t*, bool);
 
-		CallbackData_CreateLobby() : bIOFailure(false), CallbackResult(LobbyCreated_t()) {};
-	};
-
-	CCallback<ServeurHandle, ServeurHandle::CallbackData_CreateLobby> m_CallbackCreateLobby;
-	typedef void (ServeurHandle::* CallbackFunc_t)(CallbackData_CreateLobby*);
-
+	CCallback<ServeurHandle, LobbyCreated_t> m_CallbackCreateLobby;
+	typedef void (ServeurHandle::* CallbackFunc_t)(LobbyCreated_t*,bool);
+	
 public: 
 	ServeurHandle();
 	~ServeurHandle();
@@ -47,13 +42,13 @@ public:
 	bool isConnectedToLobby();
 	int getNumLobbies();
 
-	void OnLobbyDataUpdated(const LobbyMatchList_t* pCallback, bool bIOFailure);
-	void OnLobbyCreated(CallbackData_CreateLobby* pData);
+	void OnLobbyDataUpdated(LobbyMatchList_t* pCallback, bool);
+	void OnLobbyCreated(LobbyCreated_t* pParam);
 };
 
 
 class SteamManager
-{
+{	
 private:
 	ServeurHandle m_serveurH;
 

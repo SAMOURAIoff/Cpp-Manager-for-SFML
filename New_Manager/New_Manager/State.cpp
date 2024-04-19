@@ -29,10 +29,10 @@ Test::Test(WindowManager& _window, StateStack* stackState) : State(_window, stac
 
 void Test::update()
 {
+
 	if(KEY(S) and m_windowManager.timer() > 0.2f)
 	{
 		m_steam.getServeur().searchLobby();
-		//m_steam.getServeur().getNumLobbies();
 		m_steam.getServeur().connectRandomLobby();
 		m_windowManager.resetTimer();
 	}
@@ -40,6 +40,14 @@ void Test::update()
 	if (KEY(C) and m_windowManager.timer() > 0.2f)
 	{
 		m_steam.getServeur().createLobby();
+		m_steam.getServeur().searchLobby();
+		m_windowManager.resetTimer();
+	}
+
+	if (KEY(G) and m_windowManager.timer() > 0.2f)
+	{
+		m_steam.getServeur().searchLobby();
+		m_steam.getServeur().getNumLobbies();
 		m_windowManager.resetTimer();
 	}
 

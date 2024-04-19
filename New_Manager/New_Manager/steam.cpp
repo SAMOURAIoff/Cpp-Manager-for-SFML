@@ -11,7 +11,6 @@ SteamManager::SteamManager()
 	{
 		SteamInput()->Init(true);
 
-		getServeur().searchLobby();
 	}
 
 	std::cout << "------- Steam API loading finish ------- \n\n\n";
@@ -36,8 +35,8 @@ ServeurHandle& SteamManager::getServeur()
 #pragma region SERVEUR
 
 ServeurHandle::ServeurHandle() : m_connectedToLobby(false), m_numLobbies(0), m_CallbackCreateLobby(this, &ServeurHandle::OnLobbyCreated)
-{
-
+{	
+	
 }
 
 ServeurHandle::~ServeurHandle()
@@ -47,28 +46,25 @@ ServeurHandle::~ServeurHandle()
 void ServeurHandle::createLobby()
 {
 	SteamAPICall_t hAPICall = SteamMatchmaking()->CreateLobby(k_ELobbyTypePublic, 2);
-
-	m_CallbackCreateLobby.Register(this, &ServeurHandle::OnLobbyCreated);
 }
 
-void ServeurHandle::OnLobbyCreated(CallbackData_CreateLobby* pData)
+void ServeurHandle::OnLobbyCreated(LobbyCreated_t* pParam)
 {
-	if (pData->bIOFailure || pData->CallbackResult.m_eResult != k_EResultOK)
-    {
-        std::cout << "Erreur lors de la création de la salle d'attente : " << pData->CallbackResult.m_eResult << std::endl;
-    }
-    else
-    {
-        std::cout << "Salle d'attente créée avec succès !" << std::endl;
-        m_currentLobby = pData->CallbackResult.m_ulSteamIDLobby;
-        // Appeler la fonction pour mettre à jour les données du lobby
-        OnLobbyDataUpdated(nullptr, false);
-    }
+	if (pParam->m_eResult != k_EResultOK)
+	{
+		std::cout << "Erreur lors de la création de la salle d'attente : " << pParam->m_eResult << std::endl;
+	}
+	else
+	{
+		m_currentLobby = pParam->m_ulSteamIDLobby;
+		std::cout << "Salle d'attente créée avec succès ! ID de la salle : " << m_currentLobby.ConvertToUint64() << std::endl;
+	}
 }
 
 void ServeurHandle::searchLobby()
 {
-	SteamMatchmaking()->RequestLobbyList();
+	SteamAPICall_t hAPICallSteam = SteamMatchmaking()->RequestLobbyList();
+	m_CallbackLobbyDataUpdated.Set(hAPICallSteam, this, &ServeurHandle::OnLobbyDataUpdated);
 }
 
 void ServeurHandle::inviteFriendtoLobby(CSteamID playerSteamID)
@@ -92,7 +88,7 @@ void ServeurHandle::connectRandomLobby()
 		{
 			m_currentLobby = lobbyID;
 			m_connectedToLobby = true;
-			std::cout << "------- connect to lobby ------- \n";
+			std::cout << "------- connect to lobby "<< m_currentLobby.ConvertToUint64() <<" ------- \n";
 			connectToLobby(lobbyID);
 			return;
 		}
@@ -121,7 +117,7 @@ int ServeurHandle::getNumLobbies()
 	return m_numLobbies;
 }
 
-void ServeurHandle::OnLobbyDataUpdated(const LobbyMatchList_t* pCallback, bool bIOFailure)
+void ServeurHandle::OnLobbyDataUpdated(LobbyMatchList_t* pCallback,bool)
 {
 	if (pCallback)
 	{

@@ -48,16 +48,19 @@ typedef std::stack<std::unique_ptr<State>> StateStack;
 class Test : public State
 {
 private:
-    Animation m_animation;
-	void virtual update();
-    void virtual render();
-    void virtual pushState(char data);
-public:
-	Test(WindowManager& _window, StateStack* stackState);
-
+    Animation m_animation; 
     sf::RectangleShape player;
     sf::Vector2f posPlayer;
     sf::RectangleShape player2;
     sf::Vector2f posPlayer2;
+
+	void virtual update();
+    void virtual render();
+    void virtual pushState(char data);
+
+public:
+	Test(WindowManager& _window, StateStack* stackState);
+    virtual ~Test() = default;
+   
 };
 
