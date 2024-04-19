@@ -12,6 +12,8 @@ enum class ECallbackType
 	// Autres types de callback nécessaires
 };
 
+
+
 class ServeurHandle
 {
 private:
@@ -25,10 +27,11 @@ private:
 		bool bIOFailure;
 		LobbyCreated_t CallbackResult;
 
-		CallbackData_CreateLobby() : bIOFailure(false) {}
+		CallbackData_CreateLobby() : bIOFailure(false), CallbackResult(LobbyCreated_t()) {};
 	};
 
 	CCallback<ServeurHandle, ServeurHandle::CallbackData_CreateLobby> m_CallbackCreateLobby;
+	typedef void (ServeurHandle::* CallbackFunc_t)(CallbackData_CreateLobby*);
 
 public: 
 	ServeurHandle();
@@ -45,9 +48,8 @@ public:
 	int getNumLobbies();
 
 	void OnLobbyDataUpdated(const LobbyMatchList_t* pCallback, bool bIOFailure);
-	void OnLobbyCreated( CallbackData_CreateLobby& data);
+	void OnLobbyCreated(CallbackData_CreateLobby* pData);
 };
-
 
 
 class SteamManager
@@ -63,3 +65,4 @@ public:
 	ServeurHandle& getServeur();
 
 };
+

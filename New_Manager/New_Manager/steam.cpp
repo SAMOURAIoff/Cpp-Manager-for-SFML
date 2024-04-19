@@ -35,8 +35,9 @@ ServeurHandle& SteamManager::getServeur()
 
 #pragma region SERVEUR
 
-ServeurHandle::ServeurHandle() : m_connectedToLobby(false), m_numLobbies(0)
+ServeurHandle::ServeurHandle() : m_connectedToLobby(false), m_numLobbies(0), m_CallbackCreateLobby(this, &ServeurHandle::OnLobbyCreated)
 {
+
 }
 
 ServeurHandle::~ServeurHandle()
@@ -50,19 +51,19 @@ void ServeurHandle::createLobby()
 	m_CallbackCreateLobby.Register(this, &ServeurHandle::OnLobbyCreated);
 }
 
-void ServeurHandle::OnLobbyCreated( CallbackData_CreateLobby& data)
+void ServeurHandle::OnLobbyCreated(CallbackData_CreateLobby* pData)
 {
-	if (data.bIOFailure || data.CallbackResult.m_eResult != k_EResultOK)
-	{
-		std::cout << "Erreur lors de la création de la salle d'attente : " << data.CallbackResult.m_eResult << std::endl;
-	}
-	else
-	{
-		std::cout << "Salle d'attente créée avec succès !" << std::endl;
-		m_currentLobby = data.CallbackResult.m_ulSteamIDLobby;
-		// Appeler la fonction pour mettre à jour les données du lobby
-		OnLobbyDataUpdated(nullptr, false);
-	}
+	if (pData->bIOFailure || pData->CallbackResult.m_eResult != k_EResultOK)
+    {
+        std::cout << "Erreur lors de la création de la salle d'attente : " << pData->CallbackResult.m_eResult << std::endl;
+    }
+    else
+    {
+        std::cout << "Salle d'attente créée avec succès !" << std::endl;
+        m_currentLobby = pData->CallbackResult.m_ulSteamIDLobby;
+        // Appeler la fonction pour mettre à jour les données du lobby
+        OnLobbyDataUpdated(nullptr, false);
+    }
 }
 
 void ServeurHandle::searchLobby()
@@ -129,5 +130,4 @@ void ServeurHandle::OnLobbyDataUpdated(const LobbyMatchList_t* pCallback, bool b
 }
 
 #pragma endregion
-
 
