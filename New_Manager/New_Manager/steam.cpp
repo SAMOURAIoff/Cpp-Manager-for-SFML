@@ -10,7 +10,6 @@ SteamManager::SteamManager()
 	if (SteamAPI_Init())
 	{
 		SteamInput()->Init(true);
-
 	}
 
 	std::cout << "------- Steam API loading finish ------- \n\n\n";
@@ -43,9 +42,9 @@ ServeurHandle::~ServeurHandle()
 {
 }
 
-void ServeurHandle::createLobby()
+void ServeurHandle::createLobby(ELobbyType LobbyType, int MaxMembers)
 {
-	SteamAPICall_t hAPICall = SteamMatchmaking()->CreateLobby(k_ELobbyTypePublic, 2);
+	SteamAPICall_t hAPICall = SteamMatchmaking()->CreateLobby(LobbyType, MaxMembers);
 }
 
 void ServeurHandle::OnLobbyCreated(LobbyCreated_t* pParam)
@@ -58,6 +57,63 @@ void ServeurHandle::OnLobbyCreated(LobbyCreated_t* pParam)
 	{
 		m_currentLobby = pParam->m_ulSteamIDLobby;
 		std::cout << "Salle d'attente créée avec succès ! ID de la salle : " << m_currentLobby.ConvertToUint64() << std::endl;
+	}
+}
+
+void ServeurHandle::sendDataToOtherPlayers(const void* data, int dataSize)
+{
+	// Envoyer les données de position au lobby via Steam Networking
+	if (m_currentLobby.IsValid())
+	{
+		if (dataSize <= 0 || dataSize > k_nMaxSteamNetworkingPayloadSize)
+		{
+			std::cerr << "Taille de données invalide." << std::endl;
+		}
+
+		// Envoi des données à tous les autres joueurs du lobby
+		for (int i = 0; i < SteamMatchmaking()->GetNumLobbyMembers(m_currentLobby); ++i)
+		{
+			CSteamID playerID = SteamMatchmaking()->GetLobbyMemberByIndex(m_currentLobby, i);
+
+			// Ne pas envoyer les données au joueur local
+			if (playerID != SteamUser()->GetSteamID())
+			{
+				// Envoyer les données à chaque joueur du lobby
+				if (!SteamNetworking()->SendP2PPacket(playerID, data, dataSize, k_EP2PSendReliable, CHANNEL_GLOBAL_DATA))
+				{
+					std::cerr << "Échec de l'envoi des données globales au joueur " << playerID.ConvertToUint64() << std::endl;
+				}
+			}
+		}
+	}
+}
+
+void ServeurHandle::receiveDataFromOtherPlayers(void* buffer, int bufferSize)
+{
+	// Recevoir les données de position des autres joueurs du lobby
+	if (m_currentLobby.IsValid())
+	{
+		if (!buffer || bufferSize <= 0 || bufferSize > k_nMaxSteamNetworkingPayloadSize)
+		{
+			std::cerr << "Tampon de réception invalide." << std::endl;
+		}
+
+		while (SteamNetworking()->IsP2PPacketAvailable(NULL))
+		{
+			uint32 packetSize = 0;
+			CSteamID senderID;
+
+			// Lire le paquet
+			if (SteamNetworking()->ReadP2PPacket(buffer, bufferSize, &packetSize, &senderID, NULL))
+			{
+				std::cout << "Données reçues de joueur " << senderID.ConvertToUint64() << std::endl;
+			}
+			else
+			{
+				std::cerr << "Erreur lors de la lecture des données globales." << std::endl;
+			}
+		}
+
 	}
 }
 
@@ -79,7 +135,7 @@ void ServeurHandle::connectToLobby(CSteamID remoteSteamID)
 	m_connectedToLobby = true;
 }
 
-void ServeurHandle::connectRandomLobby()
+bool ServeurHandle::connectRandomLobby()
 {
 	for (int i = 0; i < m_numLobbies; ++i)
 	{
@@ -90,11 +146,12 @@ void ServeurHandle::connectRandomLobby()
 			m_connectedToLobby = true;
 			std::cout << "------- connect to lobby "<< m_currentLobby.ConvertToUint64() <<" ------- \n";
 			connectToLobby(lobbyID);
-			return;
+			return true;
 		}
 		else
 		{
 			std::cout << "------- no lobby ------- \n";
+			return false;
 		}
 	}
 }
@@ -115,6 +172,11 @@ int ServeurHandle::getNumLobbies()
 {
 	std::cout << "------- nb lobby : " << m_numLobbies << " ------- \n";
 	return m_numLobbies;
+}
+
+CSteamID ServeurHandle::getCureentLobby()
+{
+	return m_currentLobby;
 }
 
 void ServeurHandle::OnLobbyDataUpdated(LobbyMatchList_t* pCallback,bool)

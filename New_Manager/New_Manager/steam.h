@@ -9,10 +9,10 @@ enum class ECallbackType
 {
 	LobbyCreated,
 	LobbyJoined,
-	// Autres types de callback nécessaires
 };
 
-
+constexpr int CHANNEL_GLOBAL_DATA = 1;
+constexpr int k_nMaxSteamNetworkingPayloadSize = 1024;
 
 class ServeurHandle
 {
@@ -32,18 +32,22 @@ public:
 	ServeurHandle();
 	~ServeurHandle();
 
-	void createLobby();
+	void createLobby(ELobbyType LobbyType, int MaxMembers);
 	
 	void searchLobby();
 	void inviteFriendtoLobby(CSteamID playerSteamID);
 	void connectToLobby(CSteamID remoteSteamID);
-	void connectRandomLobby();
+	bool connectRandomLobby();
 	void disconnectLobby();
 	bool isConnectedToLobby();
 	int getNumLobbies();
+	CSteamID getCureentLobby();
 
 	void OnLobbyDataUpdated(LobbyMatchList_t* pCallback, bool);
 	void OnLobbyCreated(LobbyCreated_t* pParam);
+
+	void sendDataToOtherPlayers(const void* data, int dataSize);
+	void receiveDataFromOtherPlayers(void* buffer, int bufferSize);
 };
 
 
@@ -56,6 +60,9 @@ public:
 	SteamManager();
 	void update();
 	~SteamManager();
+
+
+	//focntion pour ouvrir l'overlay et envoyer une invite a un lobby (recup id csteam)
 
 	ServeurHandle& getServeur();
 

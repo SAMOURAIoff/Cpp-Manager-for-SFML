@@ -39,7 +39,7 @@ void Test::update()
 
 	if (KEY(C) and m_windowManager.timer() > 0.2f)
 	{
-		m_steam.getServeur().createLobby();
+		m_steam.getServeur().createLobby(k_ELobbyTypePublic,2);
 		m_steam.getServeur().searchLobby();
 		m_windowManager.resetTimer();
 	}
