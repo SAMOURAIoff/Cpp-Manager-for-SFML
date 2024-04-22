@@ -21,6 +21,7 @@ private:
 	std::vector<CSteamID> m_joueurPret;
 	CSteamID m_currentLobby;
 	int m_numLobbies;
+	int m_numMembers;
 
 	CCallResult< ServeurHandle, LobbyMatchList_t> m_CallbackLobbyDataUpdated;
 	typedef void (ServeurHandle::* LobbyDataCallback_t)(LobbyMatchList_t*, bool);
@@ -48,6 +49,13 @@ public:
 
 	void sendDataToOtherPlayers(const void* data, int dataSize);
 	void receiveDataFromOtherPlayers(void* buffer, int bufferSize);
+	bool isPacketAvailable();
+
+	void connectP2PWithPlayersInLobby();
+
+	void checkP2PConnectionState(CSteamID remoteSteamID);
+	void checkAllP2PConnections();
+
 };
 
 

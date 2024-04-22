@@ -45,6 +45,7 @@ ServeurHandle::~ServeurHandle()
 void ServeurHandle::createLobby(ELobbyType LobbyType, int MaxMembers)
 {
 	SteamAPICall_t hAPICall = SteamMatchmaking()->CreateLobby(LobbyType, MaxMembers);
+
 }
 
 void ServeurHandle::OnLobbyCreated(LobbyCreated_t* pParam)
@@ -62,26 +63,28 @@ void ServeurHandle::OnLobbyCreated(LobbyCreated_t* pParam)
 
 void ServeurHandle::sendDataToOtherPlayers(const void* data, int dataSize)
 {
-	// Envoyer les données de position au lobby via Steam Networking
 	if (m_currentLobby.IsValid())
 	{
 		if (dataSize <= 0 || dataSize > k_nMaxSteamNetworkingPayloadSize)
 		{
-			std::cerr << "Taille de données invalide." << std::endl;
+			std::cerr << "Taille de donnes invalide." << std::endl;
+			return;
 		}
 
-		// Envoi des données à tous les autres joueurs du lobby
 		for (int i = 0; i < SteamMatchmaking()->GetNumLobbyMembers(m_currentLobby); ++i)
 		{
 			CSteamID playerID = SteamMatchmaking()->GetLobbyMemberByIndex(m_currentLobby, i);
 
-			// Ne pas envoyer les données au joueur local
 			if (playerID != SteamUser()->GetSteamID())
 			{
-				// Envoyer les données à chaque joueur du lobby
-				if (!SteamNetworking()->SendP2PPacket(playerID, data, dataSize, k_EP2PSendReliable, CHANNEL_GLOBAL_DATA))
+				if (SteamNetworking()->SendP2PPacket(playerID, data, dataSize, k_EP2PSendReliable, CHANNEL_GLOBAL_DATA))
+				{
+					std::cerr << "envoi des données "<< data <<" au joueur " << playerID.ConvertToUint64() << std::endl;
+				}
+				else
 				{
 					std::cerr << "Échec de l'envoi des données globales au joueur " << playerID.ConvertToUint64() << std::endl;
+					return;
 				}
 			}
 		}
@@ -90,12 +93,12 @@ void ServeurHandle::sendDataToOtherPlayers(const void* data, int dataSize)
 
 void ServeurHandle::receiveDataFromOtherPlayers(void* buffer, int bufferSize)
 {
-	// Recevoir les données de position des autres joueurs du lobby
 	if (m_currentLobby.IsValid())
 	{
 		if (!buffer || bufferSize <= 0 || bufferSize > k_nMaxSteamNetworkingPayloadSize)
 		{
-			std::cerr << "Tampon de réception invalide." << std::endl;
+			std::cerr << "Tampon de reception invalide." << std::endl;
+			return;
 		}
 
 		while (SteamNetworking()->IsP2PPacketAvailable(NULL))
@@ -103,19 +106,105 @@ void ServeurHandle::receiveDataFromOtherPlayers(void* buffer, int bufferSize)
 			uint32 packetSize = 0;
 			CSteamID senderID;
 
-			// Lire le paquet
 			if (SteamNetworking()->ReadP2PPacket(buffer, bufferSize, &packetSize, &senderID, NULL))
 			{
-				std::cout << "Données reçues de joueur " << senderID.ConvertToUint64() << std::endl;
+				if (senderID == m_currentLobby)
+				{
+					if (packetSize <= 0 || packetSize > k_nMaxSteamNetworkingPayloadSize)
+					{
+						std::cerr << "Taille de paquet invalide." << std::endl;
+						return;
+					}
+					std::cout << "Données reçues : ";
+					for (int i = 0; i < packetSize; ++i)
+					{
+						std::cout << static_cast<char*>(buffer)[i];
+					}
+					std::cout << std::endl;
+
+
+					//std::cout << "Données reçues" << buffer << "de joueur " << senderID.ConvertToUint64() << std::endl;
+				}
+				else
+				{
+					std::cerr << "Données reçues d'un lobby non autorisé." << std::endl;
+					return;
+				}
 			}
 			else
 			{
-				std::cerr << "Erreur lors de la lecture des données globales." << std::endl;
+				std::cerr << "Erreur lors de la lecture des donnes globales." << std::endl;
+				return;
 			}
 		}
-
 	}
 }
+
+void ServeurHandle::connectP2PWithPlayersInLobby()
+{
+	if (m_currentLobby.IsValid())
+	{
+		int numMembers = SteamMatchmaking()->GetNumLobbyMembers(m_currentLobby);
+		for (int i = 0; i < numMembers; ++i)
+		{
+			CSteamID memberID = SteamMatchmaking()->GetLobbyMemberByIndex(m_currentLobby, i);
+			if (memberID != SteamUser()->GetSteamID()) // Ne pas se connecter à soi-même
+			{
+				SteamNetworking()->AcceptP2PSessionWithUser(memberID);
+			}
+		}
+	}
+	else
+	{
+		std::cerr << "Aucun lobby valide n'est actuellement connecté." << std::endl;
+	}
+}
+
+
+bool ServeurHandle::isPacketAvailable()
+{
+	return SteamNetworking()->IsP2PPacketAvailable(NULL);
+}
+
+void ServeurHandle::checkP2PConnectionState(CSteamID remoteSteamID)
+{
+	P2PSessionState_t p2pSessionState;
+	if (SteamNetworking()->GetP2PSessionState(remoteSteamID, &p2pSessionState))
+	{
+		std::cout << "État de la connexion P2P avec joueur " << remoteSteamID.ConvertToUint64() << ":" << std::endl;
+		std::cout << " - Connexion établie : " << (p2pSessionState.m_bConnectionActive ? "Oui" : "Non") << std::endl;
+		std::cout << " - En cours de connexion : " << (p2pSessionState.m_bConnecting ? "Oui" : "Non") << std::endl;
+		std::cout << " - Erreur de session P2P : " << static_cast<int>(p2pSessionState.m_eP2PSessionError) << std::endl;
+		std::cout << " - Utilisation du relais : " << (p2pSessionState.m_bUsingRelay ? "Oui" : "Non") << std::endl;
+		std::cout << " - Octets en attente d'envoi : " << p2pSessionState.m_nBytesQueuedForSend << std::endl;
+		std::cout << " - Paquets en attente d'envoi : " << p2pSessionState.m_nPacketsQueuedForSend << std::endl;
+		std::cout << " - Adresse IP distante : " << p2pSessionState.m_nRemoteIP << std::endl;
+		std::cout << " - Port distant : " << p2pSessionState.m_nRemotePort << std::endl;
+	}
+	else
+	{
+		std::cerr << "Impossible d'obtenir l'état de la connexion P2P avec joueur " << remoteSteamID.ConvertToUint64() << std::endl;
+	}
+}
+
+void ServeurHandle::checkAllP2PConnections()
+{
+	if (m_currentLobby.IsValid())
+	{
+		m_numMembers = SteamMatchmaking()->GetNumLobbyMembers(m_currentLobby);
+		for (int i = 0; i < m_numMembers; ++i)
+		{
+			CSteamID memberID = SteamMatchmaking()->GetLobbyMemberByIndex(m_currentLobby, i);
+			
+			checkP2PConnectionState(memberID);
+		}
+	}
+	else
+	{
+		std::cerr << "Aucun lobby valide n'est actuellement connecté." << std::endl;
+	}
+}
+
 
 void ServeurHandle::searchLobby()
 {

@@ -53,6 +53,7 @@ private:
     sf::Vector2f posPlayer;
     sf::RectangleShape player2;
     sf::Vector2f posPlayer2;
+    int receivedData;
 
 	void virtual update();
     void virtual render();
