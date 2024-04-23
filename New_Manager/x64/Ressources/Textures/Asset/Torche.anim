@@ -1,6 +1,0 @@
-[path]
-../Ressources/Textures/Asset/Torche.png
-[end]
-// Sprite Name | left | top | width | height | Frame | TimeAnim | row
-[config]
-Torche 		 0	0	16	16	6	0.1	0
