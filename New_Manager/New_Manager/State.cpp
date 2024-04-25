@@ -24,13 +24,16 @@ Test::Test(WindowManager& _window, StateStack* stackState) : State(_window, stac
 	posPlayer2 = player2.getPosition();
 
 	bg.setTexture(GET_MANAGER->getTexture("screen"));
+
+	analyticsManager.Initialize("G-CZXLH96EJY");
 	
 }
 
 void Test::update()
 {
 
-
+	if (KEY(T) and m_windowManager.timer() > 0.2f)
+		analyticsManager.SendEvent("1","Gameplay","LevelCompleted");
 
     if (KEY(R) and m_windowManager.timer() > 0.2f)
     {
