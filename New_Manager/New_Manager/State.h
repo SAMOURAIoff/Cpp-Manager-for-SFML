@@ -26,6 +26,7 @@
 #include "SFML_ENGINE/WindowManager.h"
 #include "SFML_ENGINE/Sprite.h"
 
+#include "AchievmentHandle.h"
 
 class State
 {
@@ -37,6 +38,8 @@ public:
 	void virtual update() = 0;
     void virtual render() = 0;
     void virtual pushState(char data) = 0;
+
+
 };
 
 typedef std::stack<std::unique_ptr<State>> StateStack;
@@ -48,6 +51,8 @@ private:
 	void virtual update();
     void virtual render();
     void virtual pushState(char data);
+
+
 public:
 	Test(WindowManager& _window, StateStack* stackState);
 
@@ -55,7 +60,8 @@ public:
     sf::Vector2f posPlayer;
     sf::RectangleShape player2;
     sf::Vector2f posPlayer2;
-   
+
+
     sf::Sprite bg;
 };
 

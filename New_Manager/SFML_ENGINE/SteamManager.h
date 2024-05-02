@@ -117,19 +117,6 @@ public:
 	InputDigitalActionData_t& get_button_action(std::string _action) { return m_buttons_actions[_action]; }
 };
 
-class SFMLENGINE_API AchievmentHandle
-{
-private:
-
-public:
-	AchievmentHandle();
-	~AchievmentHandle();
-
-	void initAchievements();
-
-	void unlockAchievement(const std::string& achievementID);
-	
-};
 
 struct LobbyCreated_t;
 struct LobbyMatchList_t;
@@ -171,7 +158,6 @@ class SFMLENGINE_API SteamManager
 {
 private:
 	ManetteHandle m_manetteH;
-	AchievmentHandle m_achievmentH;
 	LobbyHandle m_lobbyH;
 
 public:
@@ -180,7 +166,6 @@ public:
 	~SteamManager();
 	
 	ManetteHandle& getManette();
-	AchievmentHandle& getAchievment();
 	LobbyHandle& getLobby();
 
 };

@@ -24,8 +24,6 @@ Test::Test(WindowManager& _window, StateStack* stackState) : State(_window, stac
 	posPlayer2 = player2.getPosition();
 
 	bg.setTexture(GET_MANAGER->getTexture("screen"));
-
-	GET_MANAGER->getSteam().getManette().setDualSenseTriggerEffect(2, 8, 5, 2, 8, 5);
 	
 }
 
@@ -33,81 +31,6 @@ void Test::update()
 {
 
 
-
-    if (KEY(R) and m_windowManager.timer() > 0.2f)
-    {
-        m_windowManager.resetTimer();
-        GET_MANAGER->loadScene("Test");
-        pushState(1);
-    }
-
-	/// TEST MANETTE
-
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Move").y > 0.3f)
-	{
-		posPlayer.y -= 0.1;
-	}
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Move").y < -0.3f)
-	{
-		posPlayer.y += 0.1;
-	}
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Move").x < -0.3f)
-	{
-		posPlayer.x -= 0.1;
-	}
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Move").x > 0.3f)
-	{
-		posPlayer.x += 0.1;
-	}
-
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Camera").y > 0.3f)
-	{
-		posPlayer2.y += 0.1;
-	}
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Camera").y < -0.3f)
-	{
-		posPlayer2.y -= 0.1;
-	}
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Camera").x < -0.3f)
-	{
-		posPlayer2.x -= 0.1;
-	}
-	if (GET_MANAGER->getSteam().getManette().get_analog_action("Camera").x > 0.3f)
-	{
-		posPlayer2.x += 0.1;
-	}
-	player.setPosition(posPlayer);
-	player2.setPosition(posPlayer2);
-
-	/// TEST VIBRATION
-
-	static bool test = false;
-	if (GET_MANAGER->getSteam().getManette().get_button_action("A").bState == true)
-	{
-		GET_MANAGER->getSteam().getManette().setVibration(1000, 1000);
-		test = true;
-	}
-	else
-	{
-		if (test)
-			GET_MANAGER->getSteam().getManette().setVibration(0, 0);
-	}
-
-	///// TEST trigger vibration
-	//static bool test2 = false;
-	//if (GET_MANAGER->getSteam().getManette().get_button_action("Y").bState == true)
-	//{
-	//	GET_MANAGER->getSteam().getManette().setDualSenseTriggerEffect(2, 8, 5, 2, 8, 5);
-	//	test2 = true;
-	//}
-	//else
-	//{
-	//	if (test2)
-	//		GET_MANAGER->getSteam().getManette().setDualSenseTriggerEffect(2, 8, 0, 2, 8, 0);
-	//}
-
-	
-	
 		
 }
 

@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "SFML_ENGINE/RessourcesManager.h"
 
+
 Game::Game() : m_windowManager()
 {
 }
@@ -37,8 +38,18 @@ void Game::render()
 
 void Game::runGame()
 {
-    GET_MANAGER->getSteam();
+    GET_MANAGER->getSteam(); 
     GET_MANAGER->getSteam().getManette().init("GameControls");
+    achievmentHandle.initFromSteamworks();
+    achievmentHandle.request();
+
+    // Création des objets CCallback pour les fonctions de rappel
+    CCallback<SteamServersConnected_t, MySteamCallbacks> callbackConnected(&MySteamCallbacks::SteamServersConnectedCallback);
+    CCallback<SteamServersDisconnected_t, MySteamCallbacks> callbackDisconnected(&MySteamCallbacks::SteamServersDisconnectedCallback);
+
+    // Enregistrement des fonctions de rappel pour les événements Steam
+    SteamAPI_RegisterCallback(callbackConnected, SteamServersConnected_t::k_iCallback);
+    SteamAPI_RegisterCallback(callbackDisconnected, SteamServersDisconnected_t::k_iCallback);
 
 
     GET_MANAGER->getLoadingScreen() = Animation(GET_MANAGER->getTexture("loading"), sf::IntRect(0, 0, 128, 128), 0.1f, 8);
@@ -54,6 +65,27 @@ void Game::runGame()
         GET_MANAGER->getSteam().update();
 
         update();
+
+        // Définition et récupération de la valeur d'une statistique
+        achievmentHandle.setStat("stat1", 10);
+        int value;
+        if (achievmentHandle.getStat("stat1", &value)) {
+            std::cout << "Stat1 value: " << value << std::endl;
+        }
+
+        // Définition de la valeur d'un succès
+        if (achievmentHandle.setAchievement("ACHIEVEMENT1")) {
+            std::cout << "Achievement1 unlocked!" << std::endl;
+        }
+
+        // Réinitialisation d'un succès
+        if (achievmentHandle.clearAchievement("ACHIEVEMENT1")) {
+            std::cout << "Achievement1 reset!" << std::endl;
+        }
+
+        // Mise à jour des statistiques et des succès
+        achievmentHandle.storeStats();
+
         render();
     }
 

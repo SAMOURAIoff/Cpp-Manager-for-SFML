@@ -30,10 +30,7 @@ ManetteHandle& SteamManager::getManette()
 	return m_manetteH;
 }
 
-AchievmentHandle& SteamManager::getAchievment()
-{
-	return m_achievmentH;
-}
+
 
 LobbyHandle& SteamManager::getLobby()
 {
@@ -166,25 +163,7 @@ void ManetteHandle::create_button_action(std::string _action)
 }
 #pragma endregion
 
-#pragma region ACHIEVMENT
 
-AchievmentHandle::AchievmentHandle()
-{
-}
-
-AchievmentHandle::~AchievmentHandle()
-{
-}
-
-void AchievmentHandle::initAchievements()
-{
-}
-
-void AchievmentHandle::unlockAchievement(const std::string& achievementID)
-{
-}
-
-#pragma endregion
 
 #pragma region LOBBY
 
