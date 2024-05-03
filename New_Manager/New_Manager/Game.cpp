@@ -43,13 +43,13 @@ void Game::runGame()
     achievmentHandle.initFromSteamworks();
     achievmentHandle.request();
 
-    // Création des objets CCallback pour les fonctions de rappel
-    CCallback<SteamServersConnected_t, MySteamCallbacks> callbackConnected(&MySteamCallbacks::SteamServersConnectedCallback);
-    CCallback<SteamServersDisconnected_t, MySteamCallbacks> callbackDisconnected(&MySteamCallbacks::SteamServersDisconnectedCallback);
+   
+    //CCallback<SteamServersConnected_t, MySteamCallbacks> callbackConnected(&MySteamCallbacks::SteamServersConnectedCallback);
+   // CCallback<SteamServersDisconnected_t, MySteamCallbacks> callbackDisconnected(&MySteamCallbacks::SteamServersDisconnectedCallback);
 
-    // Enregistrement des fonctions de rappel pour les événements Steam
-    SteamAPI_RegisterCallback(callbackConnected, SteamServersConnected_t::k_iCallback);
-    SteamAPI_RegisterCallback(callbackDisconnected, SteamServersDisconnected_t::k_iCallback);
+   
+   // SteamAPI_RegisterCallback(callbackConnected, SteamServersConnected_t::k_iCallback);
+    //SteamAPI_RegisterCallback(callbackDisconnected, SteamServersDisconnected_t::k_iCallback);
 
 
     GET_MANAGER->getLoadingScreen() = Animation(GET_MANAGER->getTexture("loading"), sf::IntRect(0, 0, 128, 128), 0.1f, 8);
@@ -74,14 +74,14 @@ void Game::runGame()
         }
 
         // Définition de la valeur d'un succès
-        if (achievmentHandle.setAchievement("ACHIEVEMENT1")) {
-            std::cout << "Achievement1 unlocked!" << std::endl;
-        }
+        //if (achievmentHandle.setAchievement("ACHIEVEMENT1")) {
+        //    std::cout << "Achievement1 unlocked!" << std::endl;
+        //}
 
-        // Réinitialisation d'un succès
-        if (achievmentHandle.clearAchievement("ACHIEVEMENT1")) {
-            std::cout << "Achievement1 reset!" << std::endl;
-        }
+        //// Réinitialisation d'un succès
+        //if (achievmentHandle.clearAchievement("ACHIEVEMENT1")) {
+        //    std::cout << "Achievement1 reset!" << std::endl;
+        //}
 
         // Mise à jour des statistiques et des succès
         achievmentHandle.storeStats();

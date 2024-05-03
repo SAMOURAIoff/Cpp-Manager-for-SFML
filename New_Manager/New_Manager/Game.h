@@ -24,15 +24,15 @@ public:
     
 };
 
-class MySteamCallbacks {
-public:
-    static void SteamServersConnectedCallback(SteamServersConnected_t* pCallback) {
-        // L'utilisateur est connecté à Steam
-        std::cout << "Connected to Steam." << std::endl;
-    }
-
-    static void SteamServersDisconnectedCallback(SteamServersDisconnected_t* pCallback) {
-        // L'utilisateur est déconnecté de Steam
-        std::cout << "Disconnected from Steam. Reason: " << pCallback->m_eResult << std::endl;
-    }
-};
+//class MySteamCallbacks {
+//public:
+//    static void SteamServersConnectedCallback(SteamServersConnected_t* pCallback) {
+//        // L'utilisateur est connecté à Steam
+//        std::cout << "Connected to Steam." << std::endl;
+//    }
+//
+//    static void SteamServersDisconnectedCallback(SteamServersDisconnected_t* pCallback) {
+//        // L'utilisateur est déconnecté de Steam
+//        std::cout << "Disconnected from Steam. Reason: " << pCallback->m_eResult << std::endl;
+//    }
+//};
