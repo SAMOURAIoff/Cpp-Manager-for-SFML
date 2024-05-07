@@ -151,12 +151,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AchievmentHandle.cpp" />
+    <ClCompile Include="CloudHandle.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="State.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AchievmentHandle.h" />
+    <ClInclude Include="CloudHandle.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="State.h" />
   </ItemGroup>
