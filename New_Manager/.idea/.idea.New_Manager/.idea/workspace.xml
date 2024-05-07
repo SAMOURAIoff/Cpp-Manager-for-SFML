@@ -7,11 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4769ce90-0606-49e1-a520-6ccb7e306464" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/New_Manager/CloudHandle.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/New_Manager/CloudHandle.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/New_Manager/New_Manager.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/New_Manager/New_Manager.vcxproj" afterDir="false" />
-    </list>
+    <list default="true" id="4769ce90-0606-49e1-a520-6ccb7e306464" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,7 +16,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/.." value="achievment_test" />
+        <entry key="$PROJECT_DIR$/.." value="steam" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -29,6 +25,7 @@
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.39.33519/include/tuple" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/SFML_ENGINE/Tools.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/Steam/isteammatchmaking.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/Steam/isteamremotestorage.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/Steam/steam_api_internal.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/Steam/steamclientpublic.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/Steam/steamtypes.h" root0="SKIP_HIGHLIGHTING" />

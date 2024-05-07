@@ -40,17 +40,11 @@ void Game::runGame()
 {
     GET_MANAGER->getSteam(); 
     GET_MANAGER->getSteam().getManette().init("GameControls");
-    achievmentHandle.initFromSteamworks();
-    achievmentHandle.request();
 
-   
-    //CCallback<SteamServersConnected_t, MySteamCallbacks> callbackConnected(&MySteamCallbacks::SteamServersConnectedCallback);
-   // CCallback<SteamServersDisconnected_t, MySteamCallbacks> callbackDisconnected(&MySteamCallbacks::SteamServersDisconnectedCallback);
-
-   
-   // SteamAPI_RegisterCallback(callbackConnected, SteamServersConnected_t::k_iCallback);
-    //SteamAPI_RegisterCallback(callbackDisconnected, SteamServersDisconnected_t::k_iCallback);
-
+    const std::string filename = "test_data.txt";
+    const std::string dataToSave = "suuu";y
+    const int bufferSize = 256;
+    char buffer[bufferSize];
 
     GET_MANAGER->getLoadingScreen() = Animation(GET_MANAGER->getTexture("loading"), sf::IntRect(0, 0, 128, 128), 0.1f, 8);
     m_state.push(std::make_unique<Test>(m_windowManager, &m_state));
@@ -66,25 +60,58 @@ void Game::runGame()
 
         update();
 
-        // Définition et récupération de la valeur d'une statistique
-        achievmentHandle.setStat("stat1", 10);
-        int value;
-        if (achievmentHandle.getStat("stat1", &value)) {
-            std::cout << "Stat1 value: " << value << std::endl;
+        if(KEY(A))
+        {
+            if (cloudManager.saveDataToCloud(filename, dataToSave.c_str(), dataToSave.size()))
+                std::cout << "Donnees enregistrees dans le Cloud avec succes." << std::endl;
+            else
+                std::cerr << "Erreur lors de l'enregistrement des donnees dans le Cloud." << std::endl;
         }
 
-        // Définition de la valeur d'un succès
-        //if (achievmentHandle.setAchievement("ACHIEVEMENT1")) {
-        //    std::cout << "Achievement1 unlocked!" << std::endl;
-        //}
+        if(KEY(Z))
+        {
+            const int bytesRead = cloudManager.loadDataFromCloud(filename, buffer, bufferSize);
+            if (bytesRead > 0) 
+                std::cout << "Donnees chargees depuis le Cloud : " << std::string(buffer, bytesRead) << std::endl;
+            else 
+                std::cerr << "Erreur lors du chargement des donnees depuis le Cloud." << std::endl;
+        }
 
-        //// Réinitialisation d'un succès
-        //if (achievmentHandle.clearAchievement("ACHIEVEMENT1")) {
-        //    std::cout << "Achievement1 reset!" << std::endl;
-        //}
+        if(KEY(E))
+        {
+            if (cloudManager.isCloudEnabled()) 
+                std::cout << "Le cloud ai activer" << std::endl;
+            else 
+                std::cout << "Le cloud n'ai pas activer" << std::endl;
+        }
+        
+        if(KEY(R))
+        {
+            if (cloudManager.isCloudFileExists(filename)) 
+                std::cout << "Le fichier '" << filename << "' existe dans le Cloud." << std::endl;
+            else 
+                std::cout << "Le fichier '" << filename << "' n'existe pas dans le Cloud." << std::endl;
+        }
+        
+        if(KEY(T))
+        {
+            if (cloudManager.deleteCloudFile(filename)) 
+                std::cout << "Le fichier '" << filename << "' a ete supprime du Cloud." << std::endl;
+            else
+                std::cerr << "Erreur lors de la suppression du fichier '" << filename << "' du Cloud." << std::endl;
+        }
 
-        // Mise à jour des statistiques et des succès
-        achievmentHandle.storeStats();
+        if(KEY(Y))
+        {
+            std::vector<std::pair<std::string, int32>> files = cloudManager.listCloudFiles();
+
+            // Affichage des fichiers de sauvegarde
+            std::cout << "Fichiers de sauvegarde pour l'utilisateur : " << std::endl;
+            for (const auto& file : files) {
+                std::cout << "- Nom : " << file.first << ", Taille : " << file.second << " octets" << std::endl;
+            }
+        }
+          
 
         render();
     }

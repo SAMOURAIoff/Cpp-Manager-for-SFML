@@ -4,6 +4,7 @@
 #include "SFML_ENGINE/SteamManager.h"
 
 #include "AchievmentHandle.h"
+#include "CloudHandle.h"
 
 class Game
 {
@@ -11,6 +12,7 @@ class Game
     AchievmentHandle achievmentHandle;
 	WindowManager m_windowManager;
 	StateStack m_state;
+	CloudManager cloudManager;
 
     void update();
     void render();
@@ -27,12 +29,12 @@ public:
 //class MySteamCallbacks {
 //public:
 //    static void SteamServersConnectedCallback(SteamServersConnected_t* pCallback) {
-//        // L'utilisateur est connecté à Steam
+//        // L'utilisateur est connectï¿½ ï¿½ Steam
 //        std::cout << "Connected to Steam." << std::endl;
 //    }
 //
 //    static void SteamServersDisconnectedCallback(SteamServersDisconnected_t* pCallback) {
-//        // L'utilisateur est déconnecté de Steam
+//        // L'utilisateur est dï¿½connectï¿½ de Steam
 //        std::cout << "Disconnected from Steam. Reason: " << pCallback->m_eResult << std::endl;
 //    }
 //};
