@@ -42,7 +42,7 @@ void Game::runGame()
     GET_MANAGER->getSteam().getManette().init("GameControls");
 
     const std::string filename = "test_data.txt";
-    const std::string dataToSave = "suuu";y
+    const std::string dataToSave = "suuu";
     const int bufferSize = 256;
     char buffer[bufferSize];
 

@@ -7,7 +7,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4769ce90-0606-49e1-a520-6ccb7e306464" name="Changes" comment="" />
+    <list default="true" id="4769ce90-0606-49e1-a520-6ccb7e306464" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/New_Manager/Game.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/New_Manager/Game.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/New_Manager/analytics.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/New_Manager/analytics.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/New_Manager/analytics.h" beforeDir="false" afterPath="$PROJECT_DIR$/New_Manager/analytics.h" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

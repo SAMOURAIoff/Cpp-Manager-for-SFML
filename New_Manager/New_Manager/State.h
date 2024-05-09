@@ -25,6 +25,7 @@
 #pragma once
 #include "SFML_ENGINE/WindowManager.h"
 #include "SFML_ENGINE/Sprite.h"
+#include "analytics.h"
 
 #include "AchievmentHandle.h"
 
@@ -47,6 +48,8 @@ typedef std::stack<std::unique_ptr<State>> StateStack;
 class Test : public State
 {
 private:
+
+    AnalyticsManager analytics;
     Animation m_animation;
 	void virtual update();
     void virtual render();
