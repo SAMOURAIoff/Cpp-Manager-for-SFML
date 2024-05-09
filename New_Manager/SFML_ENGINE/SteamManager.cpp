@@ -25,6 +25,20 @@ SteamManager::~SteamManager()
     SteamAPI_Shutdown();
 }
 
+std::string SteamManager::getSteamLangage()
+{
+	const char* language = SteamApps()->GetCurrentGameLanguage();
+	std::string steamLanguage(language);
+	return steamLanguage;
+}
+
+std::string SteamManager::getAllSteamLangage()
+{
+	const char* language = SteamApps()->GetAvailableGameLanguages();
+	std::string steamLanguage(language);
+	return steamLanguage;
+}
+
 ManetteHandle& SteamManager::getManette()
 {
 	return m_manetteH;
