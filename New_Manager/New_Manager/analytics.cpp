@@ -2,51 +2,21 @@
 
 #include "analytics.h"
 
-AnalyticsManager::AnalyticsManager()
+void AnalyticsManager::Initialize(const char* gameKey, const char* secretKey)
 {
-    //m_http.setHost("www.google-analytics.com");
-    m_request.setMethod(sf::Http::Request::Post);
-    //m_request.setUri("/collect");
-    m_request.setHttpVersion(1, 1); // HTTP 1.1
-    m_request.setField("Content-Type", "application/x-www-form-urlencoded");
-    Initialize("G-CZXLH96EJY");
+    gameanalytics::GameAnalytics::configureAvailableResourceItemTypes("item");
+	gameanalytics::GameAnalytics::configureAvailableResourceItemTypes("gems");
+    gameanalytics::GameAnalytics::initialize(gameKey, secretKey);
 }
 
-void AnalyticsManager::Initialize(const std::string& trackingId)
-{
-    m_trackingId = trackingId;
-    SendEvent("1", "Test", "Test", "Test", 8);
+void AnalyticsManager::SendEvent(const char* eventName, const char* itemType, const char* itemId, int amount) {
+	gameanalytics::GameAnalytics::addResourceEvent(GAResourceFlowType::sink, itemType, itemId, amount, "USD");
 }
 
-bool AnalyticsManager::SendEvent(std::string clientID, const std::string& category, const std::string& action, const std::string& label, int value)
-{
-    std::string eventData = "v=1&tid=" + m_trackingId + "&cid=" + clientID + "&t=event&ec=" + category + "&ea=" + action;
-    if (!label.empty()) {
-        eventData += "&el=" + label;
-    }
-    if (value != 0) {
-        eventData += "&ev=" + std::to_string(value);
-    }
-    m_request.setBody("https://www.google-analytics.com/collect?v=1&tid=G-CZXLH96EJY&cid=12&t=pageview&dp=%2Fhome");
-    sf::Http::Response r = m_http.sendRequest(m_request);
-    return r.getStatus() == sf::Http::Response::Accepted;
-    //return SendHttpPostRequest("https://www.google-analytics.com/collect", eventData);
+void AnalyticsManager::AddEvent(const std::string& eventName, const std::string& eventCategory, const std::string& eventAction, const std::string& eventLabel, int eventValue) {
+	gameanalytics::GameAnalytics::addBusinessEvent(eventName.c_str(), eventCategory.c_str(), eventAction.c_str(), eventLabel.c_str(), eventValue, "USD");
 }
 
-AnalyticsManager::~AnalyticsManager()
-{
-}
-
-bool AnalyticsManager::SendHttpPostRequest(const std::string& url, const std::string& data)
-{
-    m_request.setBody(data);
-    sf::Http::Response response = m_http.sendRequest(m_request);
-    if (response.getStatus() == sf::Http::Response::Ok) {
-        std::cout << "Request succeeded: " << response.getBody() << std::endl;
-        return true;
-    }
-    else {
-        std::cerr << "Request failed, status code: " << response.getStatus() << std::endl;
-        return false;
-    }
+void AnalyticsManager::RemoveEvent(const std::string& eventName, const std::string& eventCategory, const std::string& eventAction, const std::string& eventLabel) {
+	gameanalytics::GameAnalytics::addBusinessEvent(eventName.c_str(), eventCategory.c_str(), eventAction.c_str(), eventLabel.c_str(), 0, "USD");
 }
